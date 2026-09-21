@@ -46,7 +46,16 @@ Data Management (upload and live sync) · Settings (clear all data). The layout 
 3. The site redeploys. Every open dashboard loads the new file at its next check (default every 5 minutes), or
    immediately when someone opens the page or returns to the tab.
 
-You can also click **Data Management → Upload Excel** to load a file by hand (this affects only your browser).
+> **Important:** **Upload Excel** on the dashboard changes only the browser you use. Other visitors keep seeing the data from the website.
+> To update the dashboard for everyone use one of the two ways above/below – the GitHub upload, or **Publish to GitHub**.
+
+### Or update from the dashboard itself (Publish to GitHub)
+1. Create a token: GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**.
+   Under *Repository access* pick **only this repository**; under *Permissions → Contents* choose **Read and write**. Copy the token.
+2. Open the dashboard → **Data Management → Publish to GitHub**. Enter `your-username/your-repository`, the branch (`main`),
+   the file (`data/BO_Dashboard.xlsx`) and the token. Tick *Remember* only on your own computer.
+3. Click **Choose Excel & publish**. The dashboard checks the file, shows it, and saves it into the repository.
+4. The site redeploys in 1–3 minutes; open dashboards then refresh by themselves.
 
 ## Live sync settings (Data Management tab)
 - **Option 1 – Select a folder on this computer** (Chrome or Edge on a computer): pick the folder where the report is saved and choose the file.
@@ -78,6 +87,7 @@ Keep the repository **private** unless the data may be shared publicly.
 | "This page was opened from a file on your computer" | Open the dashboard from its website address, or use Option 1 – Select folder. |
 | "That is a path on your computer" | Web pages cannot read `C:\` paths. Use Option 1 – Select folder. |
 | "The browser blocked that web address (CORS)" | Use a file on the same website. OneDrive and Google Drive share links do not work. |
+| Public visitors still see old data | Check that the new Excel is at `data/BO_Dashboard.xlsx` with exactly that name (not `BO_Dashboard (1).xlsx`, not the root folder). Wait for the deploy to finish (Netlify → Deploys, or GitHub → Actions shows a green tick). Then reload the page, or open **Data Management → Save & sync now**. The yellow bar shows the file's last-modified time. |
 | "Missing columns: …" | The Excel is missing a required column – see the table above. |
 
 The Excel reader (SheetJS) and the fonts load from the internet (cdnjs / Google Fonts), so the dashboard needs an internet connection.

@@ -145,7 +145,7 @@ header{padding-top:calc(10px + env(safe-area-inset-top,0px))}
     <div id="vb" data-v="vert" hidden></div>
     <div class="pn" id="sd" data-v="sub" hidden><div class="ph"><span>Sub division wise – Postal Warrior status</span><small>Click a heading to sort</small></div><div class="bar2"><select id="sdv" aria-label="Division"></select></div>
 <div id="skp"></div><div class="sc"><table id="t4"></table></div></div>
-    <div class="pn" id="dm" data-v="data" hidden><div class="ph">Data management</div><div style="padding:14px;display:grid;gap:10px;max-width:640px"><p>Current file: <b class="f"></b> – <span class="r"></span> BO records, updated <span class="u"></span>.</p><p>Upload the monthly Excel export to refresh every tab. Columns are matched by header name, including the Gold, Diamond and Platinum shortfall columns.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="up" id="up2">⬆ Upload Excel</button></div>
+    <div class="pn" id="dm" data-v="data" hidden><div class="ph">Data management</div><div style="padding:14px;display:grid;gap:10px;max-width:640px"><p>Current file: <b class="f"></b> – <span class="r"></span> BO records, updated <span class="u"></span>.</p><p>Upload the monthly Excel export to refresh every tab. Columns are matched by header name, including the Gold, Diamond and Platinum shortfall columns.</p><p class="sm" style="color:#a00"><b>Important:</b> “Upload Excel” changes only <b>this browser</b>. Other visitors keep seeing the data from the website. To update the dashboard for everyone, use <b>Publish to GitHub</b> below, or replace <b>data/BO_Dashboard.xlsx</b> in your GitHub project.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="up" id="up2">⬆ Upload Excel</button></div>
 <div class="lv"><h4>Live sync – load the Excel automatically</h4>
 <label class="rd"><input type="radio" name="sm" value="folder"> Option 1 – Select a folder on this computer <small>(Chrome or Edge)</small></label>
 <div class="ob"><div class="rw"><button class="up" id="pickf">📁 Select folder</button><span id="fn" class="sm">No folder selected</span></div>
@@ -154,7 +154,16 @@ header{padding-top:calc(10px + env(safe-area-inset-top,0px))}
 <div class="ob"><label>File path or web address<input id="sp" type="text" placeholder="data/BO_Dashboard.xlsx"></label></div>
 <label>Check every<select id="si"><option value="0">Off</option><option value="1">1 minute</option><option value="5">5 minutes</option><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">1 hour</option></select></label>
 <div><button class="up" id="ss">Save &amp; sync now</button></div><p id="sst" class="sm"></p>
-<p class="sm"><b>Option 1</b> reads the Excel straight from a folder on your computer (for example where your report is saved) and refreshes when the file changes. The browser asks for permission once. <b>Option 2</b> needs a web address, such as <b>data/BO_Dashboard.xlsx</b> on your Netlify site. A typed path like C:\Reports cannot be used by a web page – use Option 1 for that.</p></div></div></div>
+<p class="sm"><b>Option 1</b> reads the Excel straight from a folder on your computer (for example where your report is saved) and refreshes when the file changes. The browser asks for permission once. <b>Option 2</b> needs a web address, such as <b>data/BO_Dashboard.xlsx</b> on your Netlify site. A typed path like C:\Reports cannot be used by a web page – use Option 1 for that.</p></div>
+<div class="lv"><h4>Publish to GitHub – update the dashboard for everyone</h4>
+<p class="sm">Choose the new Excel here. The dashboard checks it, shows it, and saves it into your GitHub project so every visitor gets it.</p>
+<label>GitHub repository<input id="gr" type="text" placeholder="your-username/your-repository" autocomplete="off"></label>
+<label>Branch<input id="gb" type="text" placeholder="main" autocomplete="off"></label>
+<label>Excel file in the repository<input id="gp" type="text" placeholder="data/BO_Dashboard.xlsx" autocomplete="off"></label>
+<label>GitHub access token<input id="gt" type="password" placeholder="github_pat_…" autocomplete="off"></label>
+<label class="rd"><input type="checkbox" id="gs"> Remember these details on this computer</label>
+<div><button class="up" id="gu">⬆ Choose Excel &amp; publish</button></div><p id="gst" class="sm"></p>
+<p class="sm">Create the token at GitHub → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate new token. Under <b>Repository access</b> select only this repository, and under <b>Permissions → Contents</b> choose <b>Read and write</b>. Use it only on your own computer – anyone with the token can change your repository.</p></div></div></div>
     <div class="pn" id="st" data-v="settings" hidden><div class="ph">Settings</div><div style="padding:14px;display:grid;gap:10px;max-width:520px"><p>Uploaded data is saved in this browser only. “Clear saved data” sets every figure on the dashboard to zero; upload an Excel file to load data again.</p><div><button id="rs">Clear saved data</button></div></div></div>
   </main>
 </div>
@@ -432,7 +441,7 @@ $("ex").onclick=()=>window.print();
 /* upload */
 const fi=document.createElement("input");fi.type="file";fi.accept=".xlsx,.xls,.csv";
 $("up1").onclick=()=>fi.click();
-fi.onchange=()=>{if(fi.files[0])load(fi.files[0]);fi.value=""};
+fi.onchange=async()=>{const f=fi.files[0];fi.value="";if(f&&await load(f))say("✔ Loaded "+f.name+" – shown on this device only. To update it for everyone use Data Management → Publish to GitHub.")};
 const say=(t,bad)=>{$("msg").textContent=t;$("msg").className=bad?"err":""};
 async function load(f){
   say("Reading "+f.name+"…");
@@ -523,6 +532,35 @@ addEventListener("focus",()=>syncNow(false));
   if(!$("sf").options.length&&SRC.file)$("sf").innerHTML=`<option>${SRC.file}</option>`;
   setMode(SRC.mode);startSync();setTimeout(()=>syncNow(false),300);
 })();
+
+/* publish the Excel to GitHub */
+const b64=buf=>{let t="";const v=new Uint8Array(buf);for(let i=0;i<v.length;i+=0x8000)t+=String.fromCharCode.apply(null,v.subarray(i,i+0x8000));return btoa(t)};
+let GH={repo:"",branch:"main",path:"data/BO_Dashboard.xlsx",token:""};
+try{Object.assign(GH,JSON.parse(localStorage.getItem("pw_gh")))}catch(e){}
+$("gr").value=GH.repo;$("gb").value=GH.branch;$("gp").value=GH.path;$("gt").value=GH.token;$("gs").checked=!!(GH.repo||GH.token);
+const gst=(t,bad)=>{$("gst").textContent=t;$("gst").style.color=bad?"#a00":""};
+const ghErr=(st,j)=>new Error(st==401?"GitHub rejected the token (wrong, expired or revoked).":st==403||st==404?"The token cannot access “"+GH.repo+"”. Check the repository name and that the token has Contents: Read and write.":st==409||st==422?"GitHub refused the update ("+(j&&j.message||st)+"). Check the branch and file path.":"GitHub error "+st+".");
+const gfi=document.createElement("input");gfi.type="file";gfi.accept=".xlsx,.xlsm";
+$("gu").onclick=()=>{
+  GH={repo:$("gr").value.trim().replace(/^https?:\/\/github\.com\//,"").replace(/\.git$/,"").replace(/\/$/,""),branch:$("gb").value.trim()||"main",path:$("gp").value.trim().replace(/^\//,"")||"data/BO_Dashboard.xlsx",token:$("gt").value.trim()};
+  if(!/^[\w.-]+\/[\w.-]+$/.test(GH.repo))return gst("Enter the repository as your-username/your-repository.",true);
+  if(!GH.token)return gst("Paste your GitHub access token first.",true);
+  try{$("gs").checked?localStorage.setItem("pw_gh",JSON.stringify(GH)):localStorage.removeItem("pw_gh")}catch(e){}
+  gfi.click()};
+gfi.onchange=async()=>{
+  const f=gfi.files[0];gfi.value="";if(!f)return;gst("Checking "+f.name+"…");
+  try{
+    const buf=await f.arrayBuffer();
+    if(!window.XLSX)throw new Error("Excel reader did not load. Check your internet connection and reload the page.");
+    if(!await load({name:f.name,arrayBuffer:async()=>buf}))throw new Error("That file is not a valid BO dashboard Excel, so nothing was published.");
+    gst("Publishing to GitHub…");
+    const api="https://api.github.com/repos/"+GH.repo+"/contents/"+GH.path.split("/").map(encodeURIComponent).join("/"),H={Authorization:"Bearer "+GH.token,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};
+    let sha;const g=await fetch(api+"?ref="+encodeURIComponent(GH.branch)+"&t="+Date.now(),{headers:H,cache:"no-store"});
+    if(g.ok)sha=(await g.json()).sha;else if(g.status!=404)throw ghErr(g.status);
+    const r=await fetch(api,{method:"PUT",headers:{...H,"Content-Type":"application/json"},body:JSON.stringify({message:"Update BO dashboard data ("+stamp()+")",content:b64(buf),branch:GH.branch,...(sha?{sha}:{})})});
+    if(!r.ok)throw ghErr(r.status,await r.json().catch(()=>({})));
+    gst("✔ Published “"+GH.path+"” to GitHub. The public site updates 1–3 minutes after GitHub/Netlify redeploys; open dashboards then refresh at their next check.");
+  }catch(e){gst("⚠ "+(e instanceof TypeError?"Could not reach GitHub. Check your internet connection.":e.message),true)}};
 </script>
 </body>
 </html>
