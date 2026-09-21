@@ -1,0 +1,9 @@
+[build]
+  publish = "."
+
+# Keep the data file fresh so live sync always sees the latest upload
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    Access-Control-Allow-Origin = "*"

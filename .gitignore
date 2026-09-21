@@ -1,0 +1,8 @@
+# Excel temporary lock files
+~$*.xls*
+# OS files
+.DS_Store
+Thumbs.db
+# Build folders
+_site/
+node_modules/
