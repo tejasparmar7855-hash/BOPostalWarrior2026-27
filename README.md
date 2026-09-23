@@ -21,9 +21,9 @@ postal-warrior-dashboard/
 
 ## Tabs
 Dashboard · Division Wise · Sub Division Wise (KPIs and charts) · Vertical Wise Summary (15 reports, sortable, Excel export) ·
-BO Wise (division / sub division filters, Excel/CSV export, click a BO for full business and shortfall detail) ·
-Warrior Categories · Near Gold / Near Diamond / Near Platinum Warrior · Not Qualified BOs · Product Performance · KPI Charts ·
-Data Management (upload and live sync) · Settings (clear all data). The layout works on mobile phones.
+Branch Office Wise (Office ID column, search by BO name/Office ID/sub division, division/sub division filters, Excel/CSV export,
+click a BO for full business and shortfall detail) · Warrior Categories · Near Gold / Near Diamond / Near Platinum Warrior · Not Qualified BOs ·
+Product Performance · KPI Charts · Data Management (upload and live sync) · Settings (clear all data). The layout works on mobile phones.
 
 ## Step 0 – one-time setup: edit config.json
 Open **config.json** and set `githubRepo` to your GitHub username and repository name, for example:
@@ -35,8 +35,8 @@ Open **config.json** and set `githubRepo` to your GitHub username and repository
   "checkMinutes": 1
 }
 ```
-This is what lets the **Open GitHub upload page** button on the dashboard work, and lets the dashboard read the file straight
-from GitHub even before Netlify or GitHub Pages finish redeploying, so updates reach visitors sooner.
+This lets the dashboard read the data file straight from GitHub even before Netlify or GitHub Pages finish redeploying,
+so updates reach visitors sooner, and it is what the **Publish to GitHub** panel (see below) uses.
 (On a `your-username.github.io` site the repository name is filled in automatically and this step is optional.)
 
 ## Put it on GitHub
@@ -55,21 +55,15 @@ from GitHub even before Netlify or GitHub Pages finish redeploying, so updates r
 2. The included workflow publishes the site on every push to `main`. The address appears under **Actions** and in Settings → Pages.
    (Pages on a private repository needs a paid GitHub plan.)
 
-## Update the data for every visitor (3 easy steps)
-1. On the dashboard, open **Data Management** and click **Open GitHub upload page** (this takes you straight to the right
-   folder in your repository – it uses the repository name from `config.json`).
-2. Drag in the new Excel, keep the name **`BO_Dashboard.xlsx`**, and click **Commit changes**.
-3. Done. The dashboard reads the file straight from GitHub, so most visitors see the new data within about a minute –
-   sooner than waiting for Netlify or GitHub Pages to redeploy. Anyone already on the dashboard sees it appear **automatically**,
-   with a green “Dashboard updated” message – no click needed. It checks every minute by default (`checkMinutes` in
-   `config.json`), and instantly whenever someone returns to the browser tab. They can also click **🔄 Refresh data** next
-   to the yellow status bar to check right away.
+## Update the data for every visitor
+Open the repository's **data** folder on github.com → **Add file → Upload files** → drop the new Excel, keeping the name
+**`BO_Dashboard.xlsx`** → **Commit changes**. The dashboard reads the file straight from GitHub, so most visitors see the new
+data within about a minute – sooner than waiting for Netlify or GitHub Pages to redeploy. Anyone already on the dashboard sees
+it appear **automatically**, with a green “Dashboard updated” message – no click needed. It checks every minute by default
+(`checkMinutes` in `config.json`), and instantly whenever someone returns to the browser tab.
 
-You can do the same thing directly on github.com without the button: open the **data** folder → **Add file → Upload files** →
-drop the new file with the same name → **Commit changes**.
-
-> **Important:** **Upload Excel** on the dashboard changes only the browser you use. Other visitors keep seeing the data from the website.
-> To update the dashboard for everyone use one of the two ways above/below – the GitHub upload, or **Publish to GitHub**.
+> **Important:** **Upload Excel** on the dashboard changes only the browser you use. Other visitors keep seeing the data from
+> the website. To update the dashboard for everyone, use the GitHub upload above, or **Publish to GitHub** below.
 
 ### Or update from the dashboard itself (Publish to GitHub)
 1. Create a token: GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**.
@@ -95,7 +89,7 @@ Columns are matched by heading name, so column order and extra columns do not ma
 
 | Needed | Columns |
 |---|---|
-| Required | Division Name · Branch Office Name · POSB Account Open · Total Intital PLI/RPLI Collection · Sale of Postage Stamp · Actual Accountable Article booked · No. of Digital Txns · Total Business IPPB · Postal Warrior (Revised Parameter) · the three **Additional Free Point required for Gold / Diamond / Platinum Warrior** columns, each with its 10 shortfall columns just before it |
+| Required | Division Name · Branch Office Name · Office_ID · POSB Account Open · Total Intital PLI/RPLI Collection · Sale of Postage Stamp · Actual Accountable Article booked · No. of Digital Txns · Total Business IPPB · Postal Warrior (Revised Parameter) · the three **Additional Free Point required for Gold / Diamond / Platinum Warrior** columns, each with its 10 shortfall columns just before it |
 | Optional (treated as 0 if missing) | Sub Division Name · No. of PLI/RPLI Policies · Article Booking Revenue · Actual Parcel Booked · Parcel Revenue · Int. Mail Booked · Int. Mail Revenue · No. of IPPB Premium Account Open · No. of GI Policy · No. of Aadhaar Seeding · No. of POSA Linkage · No. of CELC · No. of DLC · Total Points (Revised Parameter) · Postal Warrior · Postal Warrior Without IPPB (Revised Parameter) |
 
 ## Privacy note
@@ -110,7 +104,6 @@ Keep the repository **private** unless the data may be shared publicly.
 | "That is a path on your computer" | Web pages cannot read `C:\` paths. Use Option 1 – Select folder. |
 | "The browser blocked that web address (CORS)" | Use a file on the same website. OneDrive and Google Drive share links do not work. |
 | Public visitors still see old data | Check that the new Excel is at `data/BO_Dashboard.xlsx` with exactly that name (not `BO_Dashboard (1).xlsx`, not the root folder). Wait for the deploy to finish (Netlify → Deploys, or GitHub → Actions shows a green tick). Then reload the page, or open **Data Management → Save & sync now**. The yellow bar shows the file's last-modified time. |
-| The **Open GitHub upload page** button is grey | Set `githubRepo` in `config.json` to your `username/repository` (Step 0), then reload the page. |
 | "Missing columns: …" | The Excel is missing a required column – see the table above. |
 
 The Excel reader (SheetJS) and the fonts load from the internet (cdnjs / Google Fonts), so the dashboard needs an internet connection.
