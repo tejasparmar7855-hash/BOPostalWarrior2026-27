@@ -159,6 +159,8 @@ a.btn{display:inline-block;color:#fff;background:#1e7d3a;padding:10px 18px;borde
 <div class="ob"><label>File path or web address<input id="sp" type="text" placeholder="data/BO_Dashboard.xlsx"></label></div>
 <label>Check every<select id="si"><option value="0">Off</option><option value="1">1 minute</option><option value="5">5 minutes</option><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">1 hour</option></select></label>
 <div><button class="up" id="ss">Save &amp; sync now</button></div><p id="sst" class="sm"></p>
+<h4 style="margin-top:12px">Diagnostics – what this page actually loaded</h4>
+<p id="diagbox" class="sm" style="background:#f6efe6;border:1px solid #e2cfae;border-radius:6px;padding:10px 12px;white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:12px"></p>
 <p class="sm"><b>Option 1</b> reads the Excel straight from a folder on your computer (for example where your report is saved) and refreshes when the file changes. The browser asks for permission once. <b>Option 2</b> needs a web address, such as <b>data/BO_Dashboard.xlsx</b> on your Netlify site. A typed path like C:\Reports cannot be used by a web page – use Option 1 for that.</p></div>
 <div class="lv"><h4>Publish to GitHub – update the dashboard for everyone</h4>
 <p class="sm">Choose the new Excel here. The dashboard checks it, shows it, and saves it into your GitHub project so every visitor gets it.</p>
@@ -477,6 +479,15 @@ try{Object.assign(SRC,JSON.parse(localStorage.getItem("pw_src")))}catch(e){}
 const saveSrc=()=>{try{localStorage.setItem("pw_src",JSON.stringify(SRC))}catch(e){}};
 const hhmm=()=>new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
 const idb=(w,k,v)=>new Promise((ok,no)=>{const o=indexedDB.open("pw_fs",1);o.onupgradeneeded=()=>o.result.createObjectStore("h");o.onerror=()=>no(o.error);o.onsuccess=()=>{try{const st=o.result.transaction("h",w?"readwrite":"readonly").objectStore("h"),q=w?st.put(v,k):st.get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)}catch(e){no(e)}}});
+let DIAG={};function renderDiag(){const d=DIAG;$("diagbox").textContent=
+  "Page address: "+location.href+"\n"+
+  "Site origin: "+location.origin+"\n"+
+  "config.json: "+(d.cfgOk?"loaded (githubRepo='"+(CFG.githubRepo||"(not set)")+"', dataFile='"+CFG.dataFile+"')":"NOT FOUND (using built-in defaults)")+"\n"+
+  "GitHub raw address: "+(CFG.raw||"(none – set githubRepo in config.json, or on a *.github.io site)")+"\n"+
+  "Last sync attempt: "+(d.when||"–")+"\n"+
+  "  → tried: "+(d.tried?d.tried.join(" then "):"–")+"\n"+
+  "  → used: "+(d.used||"–")+"\n"+
+  "  → result: "+(d.result||"–")}
 function syncStatus(t,bad){SRC.err=bad?1:0;$("sst").textContent=t;$("sst").style.color=bad?"#a00":"";$("sy").textContent=!(SRC.mins>0)?"":bad?"⚠ Could not check for new data – showing data as of "+D.updated:(SRC.mode=="folder"?"📁 Folder sync":"🔄 Auto-sync")+" every "+SRC.mins+" min · checked "+(SRC.checked||"–")}
 const setMode=m=>{SRC.mode=m;document.querySelector('input[name=sm][value='+m+']').checked=true};
 async function listFiles(){
@@ -522,20 +533,20 @@ async function syncWeb(manual){
   }
   if(!r)throw lastE;
   const buf=await r.arrayBuffer(),v=new Uint8Array(buf);let hs=0;for(let i=0;i<v.length;i+=97)hs=(hs*31+v[i])|0;const chk=buf.byteLength+":"+hs;
-  SRC.checked=hhmm();
-  if(!manual&&chk===SRC.chk){SRC.sig=sig;saveSrc();return syncStatus("Up to date – no change in the source file.")}
+  SRC.checked=hhmm();DIAG.when=hhmm();DIAG.tried=cand;DIAG.used=used;
+  if(!manual&&chk===SRC.chk){SRC.sig=sig;saveSrc();DIAG.result="up to date";renderDiag();return syncStatus("Up to date – no change in the source file.")}
   const name=decodeURIComponent(used.split("?")[0].split("/").pop());
   if(!await load({name,arrayBuffer:async()=>buf}))throw new Error("The file was found but could not be read as a BO dashboard file.");
   let lm=r.headers.get("last-modified");
   if(!lm&&used===CFG.raw){try{const c=await fetch("https://api.github.com/repos/"+CFG.githubRepo+"/commits?path="+encodeURIComponent(CFG.dataFile)+"&sha="+encodeURIComponent(CFG.branch)+"&per_page=1");if(c.ok){const j=await c.json();lm=j[0]&&j[0].commit.committer.date}}catch(e){}}
   if(lm){D.updated=stamp(new Date(lm));commit(D);head()}
-  SRC.sig=sig;SRC.chk=chk;saveSrc();syncStatus("✔ Synced "+D.records.toLocaleString("en-IN")+" BOs from "+name+" at "+hhmm()+".");if(!booting){flashLive();toast("✔ Dashboard updated with the latest data")}
+  SRC.sig=sig;SRC.chk=chk;saveSrc();DIAG.result="loaded "+D.records+" BOs, file dated "+D.updated;renderDiag();syncStatus("✔ Synced "+D.records.toLocaleString("en-IN")+" BOs from "+name+" at "+hhmm()+".");if(!booting){flashLive();toast("✔ Dashboard updated with the latest data")}
 }
 async function syncNow(manual){
-  if(syncBusy)return;syncBusy=true;
+  if(syncBusy)return;syncBusy=true;DIAG.when=hhmm();
   try{for(let i=0;i<50&&!window.XLSX;i++)await new Promise(r=>setTimeout(r,100));
     if(!window.XLSX)throw new Error("Excel reader did not load. Check your internet connection and reload the page.");await(SRC.mode=="folder"?syncFolder:syncWeb)(manual)}
-  catch(e){SRC.checked=hhmm();syncStatus("⚠ "+e.message,true)}finally{syncBusy=false;if(booting){booting=false;head()}}
+  catch(e){SRC.checked=hhmm();DIAG.result="ERROR: "+e.message;renderDiag();syncStatus("⚠ "+e.message,true)}finally{syncBusy=false;if(booting){booting=false;head()}}
 }
 function startSync(){clearInterval(syncTimer);if(SRC.mins>0)syncTimer=setInterval(()=>syncNow(false),SRC.mins*60000);syncStatus(SRC.mins>0?"Waiting for the next check.":"Live sync is off.")}
 $("sp").value=SRC.path;$("si").value=String(SRC.mins);
@@ -548,7 +559,7 @@ addEventListener("focus",()=>syncNow(false));
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState=="visible")syncNow(false)});
 const CFG={githubRepo:"",branch:"main",dataFile:"data/BO_Dashboard.xlsx",checkMinutes:1};
 async function loadCfg(){
-  try{const r=await fetch("config.json?t="+Date.now(),{cache:"no-store"});if(r.ok)Object.assign(CFG,await r.json())}catch(e){}
+  try{const r=await fetch("config.json?t="+Date.now(),{cache:"no-store"});if(r.ok){Object.assign(CFG,await r.json());DIAG.cfgOk=true}}catch(e){}
   if(!CFG.githubRepo){const m=location.hostname.match(/^([^.]+)\.github\.io$/);if(m){const g=location.pathname.split("/")[1];CFG.githubRepo=m[1]+"/"+(g&&!g.includes(".")?g:m[1]+".github.io")}}
   CFG.raw=CFG.githubRepo?"https://raw.githubusercontent.com/"+CFG.githubRepo+"/"+CFG.branch+"/"+CFG.dataFile:"";
   if(!(+CFG.checkMinutes>=0))CFG.checkMinutes=1;
@@ -561,7 +572,7 @@ async function loadCfg(){
   await loadCfg();
   if(!SRC.custom){SRC.mode="web";SRC.path=CFG.dataFile;SRC.mins=+CFG.checkMinutes}
   $("sp").value=SRC.path;$("si").value=String(SRC.mins);
-  setMode(SRC.mode);startSync();syncNow(false);
+  setMode(SRC.mode);renderDiag();startSync();syncNow(false);
 })();
 
 /* publish the Excel to GitHub */
