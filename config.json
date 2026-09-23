@@ -1,6 +1,0 @@
-{
-  "githubRepo": "your-username/your-repository",
-  "branch": "main",
-  "dataFile": "data/BO_Dashboard.xlsx",
-  "checkMinutes": 1
-}
