@@ -20,7 +20,7 @@ postal-warrior-dashboard/
 ```
 
 ## Tabs
-Dashboard · Division Wise · Sub Division Wise (KPIs, charts, and a Key Business Metrics table, all sortable) ·
+Dashboard · Division Wise · Sub Division Wise (KPIs, charts, and a sortable Key Business Metrics table – POSB, PLI/RPLI, Postage Stamp, Parcel, Int. Mail, Article, Digital Txns, IPPB Premium Account, GI, POSA, Aadhaar, Total Business IPPB, CELC and DLC, per sub division) ·
 Branch Office Wise (Office ID column, search by BO name/Office ID/sub division, division/sub division filters, Excel/CSV export,
 click a BO for full business and shortfall detail) · Vertical Wise Summary (15 reports, sortable, Excel export) ·
 Warrior Categories · Near Gold / Near Diamond / Near Platinum Warrior · Not Qualified BOs ·
