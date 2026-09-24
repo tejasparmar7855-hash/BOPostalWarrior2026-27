@@ -20,10 +20,11 @@ postal-warrior-dashboard/
 ```
 
 ## Tabs
-Dashboard · Division Wise · Sub Division Wise (KPIs and charts) · Vertical Wise Summary (15 reports, sortable, Excel export) ·
+Dashboard · Division Wise · Sub Division Wise (KPIs, charts, and a Key Business Metrics table, all sortable) ·
 Branch Office Wise (Office ID column, search by BO name/Office ID/sub division, division/sub division filters, Excel/CSV export,
-click a BO for full business and shortfall detail) · Warrior Categories · Near Gold / Near Diamond / Near Platinum Warrior · Not Qualified BOs ·
-Product Performance · KPI Charts · Data Management (upload and live sync) · Settings (clear all data). The layout works on mobile phones.
+click a BO for full business and shortfall detail) · Vertical Wise Summary (15 reports, sortable, Excel export) ·
+Warrior Categories · Near Gold / Near Diamond / Near Platinum Warrior · Not Qualified BOs ·
+Product Performance · KPI Charts · Data Management (upload, live sync, and a data-currency note shown to every visitor) · Settings (clear all data). The layout works on mobile phones.
 
 ## Step 0 – one-time setup: edit config.json
 Open **config.json** and set `githubRepo` to your GitHub username and repository name, for example:
@@ -83,6 +84,12 @@ it appear **automatically**, with a green “Dashboard updated” message – no
 ## Run it on your own computer
 Open a terminal in this folder and run `python -m http.server 8000`, then open <http://localhost:8000>.
 (Opening `index.html` by double-click also works for uploading files, but live sync from `data/` needs a web address.)
+
+## Data currency note
+In **Data Management**, a text box lets you type a note such as "POSB up to 20.09.26 · Article Booking up to 20.09.26" –
+whatever tells visitors how current each figure is. Clicking **Save note to GitHub** writes it into `config.json` in your
+repository (using the same repository/branch/token entered above for Publish to GitHub), replacing the plain
+"Data last updated…" line at the bottom of the Dashboard for every visitor. **Remove note** clears it and restores that line.
 
 ## Excel columns the dashboard reads
 Columns are matched by heading name, so column order and extra columns do not matter.

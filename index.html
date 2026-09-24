@@ -44,7 +44,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{padding:6px 8px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
 th{background:#faf3f3;font-weight:700}
 td:nth-child(2),th:nth-child(2){text-align:left}
-td:nth-child(2){color:#1a55a8;font-weight:600}
+td:nth-child(2){color:#1a55a8;font-weight:600}#t3 td:nth-child(2){color:inherit;font-weight:400}#t3 td:nth-child(3){color:#1a55a8;font-weight:600}
 tfoot td{background:linear-gradient(90deg,var(--red),var(--dark));color:#fff;font:700 15px 'Barlow Semi Condensed';border:0}
 .tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
 .t{background:#fff;border:1px solid #dcc;border-radius:6px;padding:8px 4px;text-align:center;font-size:11px;font-weight:600}
@@ -62,7 +62,7 @@ tfoot td{background:linear-gradient(90deg,var(--red),var(--dark));color:#fff;fon
 .pf b{display:block;color:var(--red);font-size:13px}.pf em{font-style:normal;font-size:20px;display:block}
 .lg{display:flex;gap:12px;font-size:12px;font-weight:600}.lg i{display:inline-block;width:11px;height:11px;margin-right:4px;vertical-align:-1px}
 svg{display:block;width:100%;height:auto}
-footer{background:var(--yel);padding:8px 14px;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;font-size:13px;font-weight:600}
+footer{background:var(--yel);padding:8px 14px;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;font-size:13px;font-weight:600}#ftnote{flex:1 1 320px}
 footer .bt{margin-left:auto;display:flex;gap:10px}
 button{font:700 14px Barlow;border:0;border-radius:6px;padding:10px 18px;color:#fff;background:var(--red);cursor:pointer}
 button.dk{background:#0f2947}
@@ -149,7 +149,7 @@ a.btn{display:inline-block;color:#fff;background:#1e7d3a;padding:10px 18px;borde
     <div class="pn" id="vc" data-v="vert" hidden><div class="ph"><span>Vertical wise summary</span><small>Click a heading to sort</small></div><div class="bar2"><select id="vsel" aria-label="Report"></select><span class="sp"></span><button id="vx">⬇ Excel</button></div></div>
     <div id="vb" data-v="vert" hidden></div>
     <div class="pn" id="sd" data-v="sub" hidden><div class="ph"><span>Sub division wise – Postal Warrior status</span><small>Click a heading to sort</small></div><div class="bar2"><select id="sdv" aria-label="Division"></select></div>
-<div id="skp"></div><div class="sc"><table id="t4"></table></div></div>
+<div id="skp"></div><div class="sc"><table id="t4"></table></div><div class="ph" style="margin-top:14px"><span>Sub division wise – Key Business Metrics</span><small>Click a heading to sort</small></div><div class="sc"><table id="t5"></table></div></div>
     <div class="pn" id="dm" data-v="data" hidden><div class="ph">Data management</div><div style="padding:14px;display:grid;gap:10px;max-width:640px"><p>Current file: <b class="f"></b> – <span class="r"></span> BO records, updated <span class="u"></span>.</p><p>Upload the monthly Excel export to refresh every tab. Columns are matched by header name, including the Gold, Diamond and Platinum shortfall columns.</p><p class="sm" style="color:#a00"><b>Important:</b> “Upload Excel” changes only <b>this browser</b>. Other visitors keep seeing the data from the website. To update the dashboard for everyone, use <b>Publish to GitHub</b> below, or replace <b>data/BO_Dashboard.xlsx</b> in your GitHub project.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="up" id="up2">⬆ Upload Excel</button></div>
 <div class="lv"><h4>Live sync – load the Excel automatically</h4>
 <label class="rd"><input type="radio" name="sm" value="folder"> Option 1 – Select a folder on this computer <small>(Chrome or Edge)</small></label>
@@ -170,18 +170,24 @@ a.btn{display:inline-block;color:#fff;background:#1e7d3a;padding:10px 18px;borde
 <label>GitHub access token<input id="gt" type="password" placeholder="github_pat_…" autocomplete="off"></label>
 <label class="rd"><input type="checkbox" id="gs"> Remember these details on this computer</label>
 <div><button class="up" id="gu">⬆ Choose Excel &amp; publish</button></div><p id="gst" class="sm"></p>
-<p class="sm">Create the token at GitHub → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate new token. Under <b>Repository access</b> select only this repository, and under <b>Permissions → Contents</b> choose <b>Read and write</b>. Use it only on your own computer – anyone with the token can change your repository.</p></div></div></div>
+<p class="sm">Create the token at GitHub → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate new token. Under <b>Repository access</b> select only this repository, and under <b>Permissions → Contents</b> choose <b>Read and write</b>. Use it only on your own computer – anyone with the token can change your repository.</p></div>
+<div class="lv"><h4>Data currency note – shown at the bottom of the Dashboard, for everyone</h4>
+<p class="sm">Type when each figure was last updated, for example: “POSB up to 20.09.26 · Article Booking up to 20.09.26 · PLI/RPLI downloaded on 21.09.2026 · Postage Stamp up to 20.09.26”. This replaces the “Data last updated…” line for every visitor once published. Leave it empty to show that line again.</p>
+<textarea id="ntxt" rows="3" style="width:100%;padding:8px 10px;border:1px solid #d9c6c6;border-radius:6px;font:inherit;resize:vertical" placeholder="POSB up to 20.09.26 · Article Booking up to 20.09.26 · PLI/RPLI downloaded on 21.09.2026 · Postage Stamp up to 20.09.26 · Digital Txns up to 20.09.26 · E-Payment Txns up to 31.07.26 · IPPB Premium Account up to 19.09.26 · IPPB Upgradation up to 20.09.26 · GI Policies up to 18.09.26 · Aadhaar Seeding up to 20.09.26 · POSA Linkage up to 19.09.26 · DLC and CELC up to 17.09.26"></textarea>
+<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="up" id="nsave">⬆ Save note to GitHub</button><button id="nclear">Remove note</button></div><p id="nst" class="sm"></p>
+<p class="sm">Uses the same repository, branch and token entered above. Saved into <b>config.json</b> in your repository, so it needs the same token permission (Contents: Read and write).</p></div></div>
     <div class="pn" id="st" data-v="settings" hidden><div class="ph">Settings</div><div style="padding:14px;display:grid;gap:10px;max-width:520px"><p>Uploaded data is saved in this browser only. “Clear saved data” sets every figure on the dashboard to zero; upload an Excel file to load data again.</p><div><button id="rs">Clear saved data</button></div></div></div>
   </main>
 </div>
 <dialog id="dlg"></dialog>
 <div id="toast" role="status"></div>
 <footer id="ft">
-  <span>Data last updated: <span class="u"></span></span><span>File: <span class="f"></span></span><span>Records: <span class="r"></span></span>
+  <span id="ftinfo"><span>Data last updated: <span class="u"></span></span><span>File: <span class="f"></span></span><span>Records: <span class="r"></span></span></span><span id="ftnote" hidden></span>
   <div class="bt"><button class="up" id="up1">⬆ Upload Excel</button><button class="dk" id="ex">Export Report</button></div>
 </footer>
 
 <script>
+let CFG={githubRepo:"",branch:"main",dataFile:"data/BO_Dashboard.xlsx",checkMinutes:1,note:""};
 /* ---- Excel → dashboard data ---- */
 const norm=s=>String(s==null?"":s).replace(/\s+/g," ").trim().toLowerCase();
 const inr=n=>Math.round(n).toLocaleString("en-IN");
@@ -239,7 +245,7 @@ function emptyData(){return{updated:"–",file:"No file uploaded",records:0,pts:
  tiles:[["Total Branch Offices","0","Across 0 Divisions"],["POSB A/c Opened*","0","Since Apr 2026"],["PLI/RPLI Premium","₹ 0","New Policies 0"],["Postage Stamp","₹ 0","Postage Stamp Sold"],["Article Booking Rev.","₹ 0","Article Booked 0"],["IPPB Business","0","IPPB Premium A/c, GI, POSA, CELC, DLC"]],
  met:[],metTotal:["0","0","0","0","0","0","0"],top:[],dist:[],
  prod:[["📮","POSB","0"],["🧾","PLI/RPLI","0"],["✉️","Postage Stamp","0"],["📦","Article Booking","0"],["📱","Digital Txns","0"],["🏦","IPPB Business","0"]],trend:[],bos:[]}}
-function head(){$("fl").parentNode.hidden=!D.records;$("nd").hidden=!!D.records;$("nd").textContent=booting?"⏳ Loading the latest data…":"No data loaded yet – go to Data Management to upload the Excel file, or ask the administrator to load it.";
+function head(){$("fl").parentNode.hidden=!D.records;const hasNote=!!(CFG.note&&CFG.note.trim());$("ftinfo").hidden=hasNote;$("ftnote").hidden=!hasNote;$("ftnote").textContent=CFG.note||"";$("nd").hidden=!!D.records;$("nd").textContent=booting?"⏳ Loading the latest data…":"No data loaded yet – go to Data Management to upload the Excel file, or ask the administrator to load it.";
   $("sub").textContent="Ahmedabad Region  |  FY 2026-27  |  "+D.div.length+" Divisions  |  "+D.records.toLocaleString("en-IN")+" Branch Offices";
   $("dt").textContent="📅 "+D.updated;
   $("fl").textContent=D.file;$("rc").textContent=D.records.toLocaleString("en-IN");$("up").textContent=D.updated;
@@ -271,7 +277,7 @@ function showView(v){
   document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.dataset.nav==v));
   if(VT[v])renderBO();scrollTo(0,0);
 }
-[["⌂","Dashboard","dash"],["▤","Division Wise","division"],["▥","Sub Division Wise","sub"],["▧","Vertical Wise Summary","vert"],["▦","Branch Office Wise","bo"],["★","Warrior Categories","cat"],["☆","Near Gold Warrior","near"],["◇","Near Diamond Warrior","neard"],["✦","Near Platinum Warrior","nearp"],["⚠","Not Qualified BOs","nq"],["◉","Product Performance","prod"],["▮","KPI Charts","kpi"],["⛁","Data Management","data"],["⚙","Settings","settings"]]
+[["⌂","Dashboard","dash"],["▤","Division Wise","division"],["▥","Sub Division Wise","sub"],["▦","Branch Office Wise","bo"],["▧","Vertical Wise Summary","vert"],["★","Warrior Categories","cat"],["☆","Near Gold Warrior","near"],["◇","Near Diamond Warrior","neard"],["✦","Near Platinum Warrior","nearp"],["⚠","Not Qualified BOs","nq"],["◉","Product Performance","prod"],["▮","KPI Charts","kpi"],["⛁","Data Management","data"],["⚙","Settings","settings"]]
 .forEach(([i,l,v])=>{const a=document.createElement("a");a.tabIndex=0;a.dataset.nav=v;a.innerHTML=`<span>${i}</span>${l}`;a.onclick=()=>showView(v);a.onkeydown=e=>{if(e.key==="Enter")showView(v)};$("nav").append(a)});
 $("nav").insertAdjacentHTML("beforeend",'<div class="motto">Focus on Performance<br>Drive for Excellence<br>Deliver with Pride<br>Let\'s Achieve 100% Together</div>');
 function subRows(){const m={};D.bos.forEach(b=>{const k=b[2]||"(No sub division)",a=m[k]||(m[k]={n:k,dv:b[1],t:0,g:0,d:0,p:0,x:0});a.t++;a[b[3]]++});
@@ -314,7 +320,20 @@ function renderSub(){
   $("t4").innerHTML="<thead><tr>"+SC.map((l,i)=>`<th data-c="${i}">${l}${SS.c==i?(SS.d<0?" ▼":" ▲"):""}</th>`).join("")+"</tr></thead><tbody>"+
    R.map(a=>`<tr><td>${a.n}</td><td>${a.dv}</td><td>${a.t}</td><td>${Z(a.g)}</td><td>${Z(a.d)}</td><td>${Z(a.p)}</td><td>${a.x}</td><td style="background:hsl(${Math.round(a.q/a.t/mx*120)} 65% 75%);font-weight:700">${P2(a.q,a.t)}</td><td>${P2(a.d+a.p,a.t)}</td><td>${P2(a.p,a.t)}</td></tr>`).join("")+
    `</tbody><tfoot><tr><td>Total</td><td></td><td>${inr(T.t)}</td><td>${inr(T.g)}</td><td>${inr(T.d)}</td><td>${inr(T.p)}</td><td>${inr(T.x)}</td><td>${P2(T.q,T.t)}</td><td>${P2(T.d+T.p,T.t)}</td><td>${P2(T.p,T.t)}</td></tr></tfoot>`;
+  renderSubMetrics(R);
 }
+const SMC=["Sub division","Division","Total BOs","POSB Opened","PLI/RPLI Collection (₹)","Postage Stamp (₹)","Article Booked","Digital Txns","IPPB Business"];
+let SMS={c:2,d:-1};
+function renderSubMetrics(R){
+  const m={};D.bos.forEach(b=>{if(SDV&&b[1]!=SDV)return;const k=b[2]||"(No sub division)",a=m[k]||(m[k]={n:k,dv:b[1],t:0,posb:0,col:0,stamp:0,art:0,digi:0,ippb:0});a.t++;a.posb+=b[4];a.col+=b[6];a.stamp+=b[7];a.art+=b[8];a.digi+=b[10];a.ippb+=b[11]});
+  const L=Object.values(m),T={t:0,posb:0,col:0,stamp:0,art:0,digi:0,ippb:0};L.forEach(a=>{for(const k in T)T[k]+=a[k]});
+  const V=a=>[a.n,a.dv,a.t,a.posb,a.col,a.stamp,a.art,a.digi,a.ippb][SMS.c];
+  L.sort((a,b)=>{const x=V(a),y=V(b);return (typeof x=="string"?x.localeCompare(y):x-y)*SMS.d||b.t-a.t});
+  $("t5").innerHTML="<thead><tr>"+SMC.map((l,i)=>`<th data-c="${i}">${l}${SMS.c==i?(SMS.d<0?" ▼":" ▲"):""}</th>`).join("")+"</tr></thead><tbody>"+
+   L.map(a=>`<tr><td>${a.n}</td><td>${a.dv}</td><td>${inr(a.t)}</td><td>${inr(a.posb)}</td><td>${inr(a.col)}</td><td>${inr(a.stamp)}</td><td>${inr(a.art)}</td><td>${inr(a.digi)}</td><td>${inr(a.ippb)}</td></tr>`).join("")+
+   `</tbody><tfoot><tr><td>Total</td><td></td><td>${inr(T.t)}</td><td>${inr(T.posb)}</td><td>${inr(T.col)}</td><td>${inr(T.stamp)}</td><td>${inr(T.art)}</td><td>${inr(T.digi)}</td><td>${inr(T.ippb)}</td></tr></tfoot>`;
+}
+$("t5").onclick=e=>{const th=e.target.closest("th[data-c]");if(!th)return;const k=+th.dataset.c;SMS=SMS.c==k?{c:k,d:-SMS.d}:{c:k,d:k<2?1:-1};renderSubMetrics()};
 $("t4").onclick=e=>{const c=e.target.closest("th[data-c]");if(c){const k=+c.dataset.c;SS=SS.c==k?{c:k,d:-SS.d}:{c:k,d:k<2?1:-1};renderSub()}};
 $("sdv").onchange=e=>{SDV=e.target.value;renderSub()};
 const hbar=(t,it,fmt)=>{if(!it.length)return `<div><h4>${t}</h4><p style="color:#888">No data</p></div>`;const m=Math.max(...it.map(x=>x[1]),1e-9),H=it.length*26+6;
@@ -557,7 +576,6 @@ $("ss").onclick=()=>{SRC.custom=true;SRC.mins=+$("si").value;SRC.path=$("sp").va
 if(!window.showDirectoryPicker){$("pickf").disabled=true;$("fn").textContent="Not supported in this browser – use Chrome or Edge on a computer."}
 addEventListener("focus",()=>syncNow(false));
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState=="visible")syncNow(false)});
-const CFG={githubRepo:"",branch:"main",dataFile:"data/BO_Dashboard.xlsx",checkMinutes:1};
 async function loadCfg(){
   try{const r=await fetch("config.json?t="+Date.now(),{cache:"no-store"});if(r.ok){Object.assign(CFG,await r.json());DIAG.cfgOk=true}}catch(e){}
   if(!CFG.githubRepo){const m=location.hostname.match(/^([^.]+)\.github\.io$/);if(m){const g=location.pathname.split("/")[1];CFG.githubRepo=m[1]+"/"+(g&&!g.includes(".")?g:m[1]+".github.io")}}
@@ -571,6 +589,7 @@ async function loadCfg(){
   if(!$("sf").options.length&&SRC.file)$("sf").innerHTML=`<option>${SRC.file}</option>`;
   await loadCfg();
   if(!SRC.custom){SRC.mode="web";SRC.path=CFG.dataFile;SRC.mins=+CFG.checkMinutes}
+  head();$("ntxt").value=CFG.note||"";
   $("sp").value=SRC.path;$("si").value=String(SRC.mins);
   setMode(SRC.mode);renderDiag();startSync();syncNow(false);
 })();
@@ -603,6 +622,31 @@ gfi.onchange=async()=>{
     if(!r.ok)throw ghErr(r.status,await r.json().catch(()=>({})));
     gst("✔ Published “"+GH.path+"” to GitHub. The public site updates 1–3 minutes after GitHub/Netlify redeploys; open dashboards then refresh at their next check.");
   }catch(e){gst("⚠ "+(e instanceof TypeError?"Could not reach GitHub. Check your internet connection.":e.message),true)}};
+
+/* publish the "data currency" note to config.json on GitHub */
+const nst=(t,bad)=>{$("nst").textContent=t;$("nst").style.color=bad?"#a00":""};
+async function publishConfig(mutate){
+  const g={repo:$("gr").value.trim().replace(/^https?:\/\/github\.com\//,"").replace(/\.git$/,"").replace(/\/$/,""),branch:$("gb").value.trim()||"main",token:$("gt").value.trim()};
+  if(!/^[\w.-]+\/[\w.-]+$/.test(g.repo))return nst("Enter the repository as your-username/your-repository (above).",true);
+  if(!g.token)return nst("Paste your GitHub access token first (above).",true);
+  nst("Reading config.json…");
+  try{
+    const api="https://api.github.com/repos/"+g.repo+"/contents/config.json",H={Authorization:"Bearer "+g.token,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};
+    const gr=await fetch(api+"?ref="+encodeURIComponent(g.branch)+"&t="+Date.now(),{headers:H,cache:"no-store"});
+    let cfg={},sha;
+    if(gr.ok){const j=await gr.json();sha=j.sha;try{cfg=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,"")))))}catch(e){cfg={}}}
+    else if(gr.status!=404)throw ghErr(gr.status);
+    mutate(cfg);
+    nst("Saving to GitHub…");
+    const body=JSON.stringify(cfg,null,2)+"\n",content=btoa(unescape(encodeURIComponent(body)));
+    const pr=await fetch(api,{method:"PUT",headers:{...H,"Content-Type":"application/json"},body:JSON.stringify({message:"Update dashboard config ("+stamp()+")",content,branch:g.branch,...(sha?{sha}:{})})});
+    if(!pr.ok)throw ghErr(pr.status,await pr.json().catch(()=>({})));
+    CFG.note=cfg.note||"";head();
+    nst("✔ Saved. The public site shows this 1–3 minutes after GitHub/Netlify redeploys.");
+  }catch(e){nst("⚠ "+(e instanceof TypeError?"Could not reach GitHub. Check your internet connection.":e.message),true)}
+}
+$("nsave").onclick=()=>publishConfig(cfg=>cfg.note=$("ntxt").value.trim());
+$("nclear").onclick=()=>{$("ntxt").value="";publishConfig(cfg=>delete cfg.note)};
 </script>
 </body>
 </html>
