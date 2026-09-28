@@ -148,6 +148,13 @@ a.btn{display:inline-block;color:#fff;background:#1e7d3a;padding:10px 18px;borde
     </div>
     <div class="pn" id="vc" data-v="vert" hidden><div class="ph"><span>Vertical wise summary</span><small>Click a heading to sort</small></div><div class="bar2"><select id="vsel" aria-label="Report"></select><span class="sp"></span><button id="vx">⬇ Excel</button></div></div>
     <div id="vb" data-v="vert" hidden></div>
+    <div class="pn" id="bv" data-v="bovs" hidden>
+      <div class="ph"><span>BO Wise Vertical Shortfall</span><small id="bvc"></small></div>
+      <div class="bar2"><select id="bvsel" aria-label="Vertical"></select><span class="sp"></span><input id="bvq" type="search" placeholder="Search BO, Office ID or sub division"><select id="bvdv" aria-label="Division"></select><select id="bvsb" aria-label="Sub division"></select><button id="bvex">⬇ Excel</button><button id="bvec">⬇ CSV</button></div>
+      <div id="bvtabs" class="bar2" style="padding-top:0"></div>
+      <div class="sc"><table id="bvt"></table></div>
+      <div class="pg"><button id="bvpv">‹ Prev</button><span id="bvpgn"></span><button id="bvnx">Next ›</button></div>
+    </div>
     <div class="pn" id="sd" data-v="sub" hidden><div class="ph"><span>Sub division wise – Postal Warrior status</span><small>Click a heading to sort</small></div><div class="bar2"><select id="sdv" aria-label="Division"></select></div>
 <div id="skp"></div><div class="sc"><table id="t4"></table></div><div class="ph" style="margin-top:14px"><span>Sub division wise – Key Business Metrics</span><small>Click a heading to sort</small></div><div class="sc"><table id="t5"></table></div></div>
     <div class="pn" id="dm" data-v="data" hidden><div class="ph">Data management</div><div style="padding:14px;display:grid;gap:10px;max-width:640px"><p>Current file: <b class="f"></b> – <span class="r"></span> BO records, updated <span class="u"></span>.</p><p>Upload the monthly Excel export to refresh every tab. Columns are matched by header name, including the Gold, Diamond and Platinum shortfall columns.</p><p class="sm" style="color:#a00"><b>Important:</b> “Upload Excel” changes only <b>this browser</b>. Other visitors keep seeing the data from the website. To update the dashboard for everyone, use <b>Publish to GitHub</b> below, or replace <b>data/BO_Dashboard.xlsx</b> in your GitHub project.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="up" id="up2">⬆ Upload Excel</button></div>
@@ -175,19 +182,19 @@ a.btn{display:inline-block;color:#fff;background:#1e7d3a;padding:10px 18px;borde
 <p class="sm">Type when each figure was last updated, for example: “POSB up to 20.09.26 · Article Booking up to 20.09.26 · PLI/RPLI downloaded on 21.09.2026 · Postage Stamp up to 20.09.26”. This replaces the “Data last updated…” line for every visitor once published. Leave it empty to show that line again.</p>
 <textarea id="ntxt" rows="3" style="width:100%;padding:8px 10px;border:1px solid #d9c6c6;border-radius:6px;font:inherit;resize:vertical" placeholder="POSB up to 20.09.26 · Article Booking up to 20.09.26 · PLI/RPLI downloaded on 21.09.2026 · Postage Stamp up to 20.09.26 · Digital Txns up to 20.09.26 · E-Payment Txns up to 31.07.26 · IPPB Premium Account up to 19.09.26 · IPPB Upgradation up to 20.09.26 · GI Policies up to 18.09.26 · Aadhaar Seeding up to 20.09.26 · POSA Linkage up to 19.09.26 · DLC and CELC up to 17.09.26"></textarea>
 <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="up" id="nsave">⬆ Save note to GitHub</button><button id="nclear">Remove note</button></div><p id="nst" class="sm"></p>
-<p class="sm">Uses the same repository, branch and token entered above. Saved into <b>config.json</b> in your repository, so it needs the same token permission (Contents: Read and write).</p></div></div>
-    <div class="pn" id="st" data-v="settings" hidden><div class="ph">Settings</div><div style="padding:14px;display:grid;gap:10px;max-width:520px"><p>Uploaded data is saved in this browser only. “Clear saved data” sets every figure on the dashboard to zero; upload an Excel file to load data again.</p><div><button id="rs">Clear saved data</button></div></div></div>
+<p class="sm">Uses the same repository, branch and token entered above. Saved into <b>config.json</b> in your repository, so it needs the same token permission (Contents: Read and write).</p></div></div></div>
+    <div class="pn" id="st" data-v="settings" hidden><div class="ph">Settings</div><div style="padding:14px;display:grid;gap:10px;max-width:520px"><p>Uploaded data is saved in this browser only. “Clear saved data” sets every figure on the dashboard to zero; upload an Excel file to load data again.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button id="rs">Clear saved data</button><button id="soa">Sign out of admin mode</button></div></div></div>
   </main>
 </div>
 <dialog id="dlg"></dialog>
 <div id="toast" role="status"></div>
 <footer id="ft">
   <span id="ftinfo"><span>Data last updated: <span class="u"></span></span><span>File: <span class="f"></span></span><span>Records: <span class="r"></span></span></span><span id="ftnote" hidden></span>
-  <div class="bt"><button class="up" id="up1">⬆ Upload Excel</button><button class="dk" id="ex">Export Report</button></div>
+  <div class="bt" id="ftbt"><button class="up" id="up1">⬆ Upload Excel</button><button class="dk" id="ex">Export Report</button></div>
 </footer>
 
 <script>
-let CFG={githubRepo:"",branch:"main",dataFile:"data/BO_Dashboard.xlsx",checkMinutes:1,note:""};
+let CFG={githubRepo:"",branch:"main",dataFile:"data/BO_Dashboard.xlsx",checkMinutes:1,note:"",adminKey:""};
 /* ---- Excel → dashboard data ---- */
 const norm=s=>String(s==null?"":s).replace(/\s+/g," ").trim().toLowerCase();
 const inr=n=>Math.round(n).toLocaleString("en-IN");
@@ -271,15 +278,31 @@ const unmet=a=>a.filter(x=>x>0).length;
 const NR={near:["x",13],neard:["g",15],nearp:["gd",17]};
 const match=(b,t)=>t=="all"||(NR[t]?NR[t][0].includes(b[3])&&unmet(b[NR[t][1]])<=2:b[3]==t);
 function showView(v){
+  if(typeof ADMIN_ONLY!=="undefined"&&ADMIN_ONLY.includes(v)&&!ADMIN)v="dash";
   VIEW=v;if(VT[v]){TAB=VT[v];PG=0}
   document.querySelectorAll("[data-v]").forEach(e=>e.hidden=!e.dataset.v.split(" ").includes(v));
   [".two",".col",".cols"].forEach(sel=>document.querySelectorAll(sel).forEach(e=>{const k=[...e.children].filter(c=>!c.hidden).length;e.hidden=!k;e.classList.toggle("solo",k<2)}));
   document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.dataset.nav==v));
   if(VT[v])renderBO();scrollTo(0,0);
 }
-[["⌂","Dashboard","dash"],["▤","Division Wise","division"],["▥","Sub Division Wise","sub"],["▦","Branch Office Wise","bo"],["▧","Vertical Wise Summary","vert"],["★","Warrior Categories","cat"],["☆","Near Gold Warrior","near"],["◇","Near Diamond Warrior","neard"],["✦","Near Platinum Warrior","nearp"],["⚠","Not Qualified BOs","nq"],["◉","Product Performance","prod"],["▮","KPI Charts","kpi"],["⛁","Data Management","data"],["⚙","Settings","settings"]]
-.forEach(([i,l,v])=>{const a=document.createElement("a");a.tabIndex=0;a.dataset.nav=v;a.innerHTML=`<span>${i}</span>${l}`;a.onclick=()=>showView(v);a.onkeydown=e=>{if(e.key==="Enter")showView(v)};$("nav").append(a)});
-$("nav").insertAdjacentHTML("beforeend",'<div class="motto">Focus on Performance<br>Drive for Excellence<br>Deliver with Pride<br>Let\'s Achieve 100% Together</div>');
+const NAV_ITEMS=[["⌂","Dashboard","dash"],["▤","Division Wise","division"],["▥","Sub Division Wise","sub"],["▦","Branch Office Wise","bo"],["▧","Vertical Wise Summary","vert"],["▨","BO Wise Vertical Shortfall","bovs"],["★","Warrior Categories","cat"],["☆","Near Gold Warrior","near"],["◇","Near Diamond Warrior","neard"],["✦","Near Platinum Warrior","nearp"],["⚠","Not Qualified BOs","nq"],["◉","Product Performance","prod"],["▮","KPI Charts","kpi"],["⛁","Data Management","data"],["⚙","Settings","settings"]];
+const ADMIN_ONLY=["data","settings"];
+let ADMIN=true;
+function buildNav(){
+  $("nav").innerHTML="";
+  NAV_ITEMS.filter(([,,v])=>ADMIN||!ADMIN_ONLY.includes(v)).forEach(([i,l,v])=>{const a=document.createElement("a");a.tabIndex=0;a.dataset.nav=v;a.className=VIEW==v?"on":"";a.innerHTML=`<span>${i}</span>${l}`;a.onclick=()=>showView(v);a.onkeydown=e=>{if(e.key==="Enter")showView(v)};$("nav").append(a)});
+  $("nav").insertAdjacentHTML("beforeend",'<div class="motto">Focus on Performance<br>Drive for Excellence<br>Deliver with Pride<br>Let\'s Achieve 100% Together<br><a id="adminlink" href="#" style="color:inherit;opacity:.55;font-size:11px">'+(ADMIN&&CFG.adminKey?"🔓 Sign out of admin":"🔒 Admin sign-in")+'</a></div>');
+  if(ADMIN_ONLY.includes(VIEW)&&!ADMIN)showView("dash");
+  $("up1").style.display=ADMIN?"":"none";
+  $("adminlink").onclick=e=>{e.preventDefault();
+    if(ADMIN&&CFG.adminKey){try{localStorage.removeItem("pw_admin")}catch(e){}ADMIN=!CFG.adminKey;buildNav();return}
+    const key=prompt("Enter the admin passphrase:");if(key==null)return;
+    if(!CFG.adminKey||key===CFG.adminKey){try{localStorage.setItem("pw_admin",key||"1")}catch(e){}ADMIN=true;buildNav()}
+    else alert("That passphrase is not correct.")};
+}
+function updateAdmin(){let saved="";try{saved=localStorage.getItem("pw_admin")||""}catch(e){}
+  ADMIN=!CFG.adminKey||saved===CFG.adminKey;buildNav()}
+buildNav();
 function subRows(){const m={};D.bos.forEach(b=>{const k=b[2]||"(No sub division)",a=m[k]||(m[k]={n:k,dv:b[1],t:0,g:0,d:0,p:0,x:0});a.t++;a[b[3]]++});
   return Object.values(m).map(a=>({...a,q:a.g+a.d+a.p})).sort((a,b)=>b.q/b.t-a.q/a.t||b.t-a.t)}
 const P2=(a,b)=>(b?a/b*100:0).toFixed(2)+"%";
@@ -392,6 +415,51 @@ $("vx").onclick=()=>{if(!D.bos.length)return say("No data to export.",true);if(!
     P.forEach(([a,b,n])=>{for(let r=a;r<=b;r++)for(let k=n-3;k<n;k++){const x=ws[XLSX.utils.encode_cell({r,c:k})];if(x)x.z="0.00%"}});
     XLSX.utils.book_append_sheet(wb,ws,((i+1)+". "+t.replace("Gold Postal Warrior – ","").replace("Revenue Generating Accountable ","")).replace(/[\\\/?*\[\]:]/g,"-").slice(0,31))});
   saveFile("Vertical_wise_summary.xlsx",XLSX.write(wb,{bookType:"xlsx",type:"array"}),"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")};
+/* BO Wise Vertical Shortfall */
+let BVSEL=0,BVTAB="all",BVQ="",BVDIV="",BVSUB="",BVPG=0,BVROWS=[];
+const BVN=["POSB Account Open","PLI/RPLI Policies","PLI/RPLI Initial Premium","Postage Stamp","Parcel Booking","Article Booking","Overall IPPB Business","IPPB Premium Account","GI Policy","POSA/Aadhaar Seeding"];
+const BVVAL=[b=>b[4],b=>b[5],b=>b[6],b=>b[7],b=>b[19],b=>b[8],b=>b[25],b=>b[21],b=>b[22],b=>b[23]+b[24]];
+let BVS={c:0,d:1};
+function bvOptions(){$("bvsel").innerHTML=BVN.map((n,i)=>`<option value="${i}">${n}</option>`).join("");$("bvsel").value=BVSEL}
+function bvMatch(b,t){if(t=="all")return true;const u1=b[13][BVSEL]>0,u2=b[15][BVSEL]>0,u3=b[17][BVSEL]>0;
+  if(t=="met_g")return !u1;if(t=="met_d")return !u2;if(t=="met_p")return !u3;if(t=="short_g")return u1;if(t=="short_d")return u2;if(t=="short_p")return u3;return true}
+function renderBVtabs(){
+  const T=[["all","All"],["met_g","Gold met"],["short_g","Gold short"],["met_d","Diamond met"],["short_d","Diamond short"],["met_p","Platinum met"],["short_p","Platinum short"]];
+  $("bvtabs").innerHTML=T.map(([k,l])=>`<button data-k="${k}" class="${k==BVTAB?"on":""}">${l} (${D.bos.filter(b=>bvMatch(b,k)).length})</button>`).join("");
+}
+function renderBV(){
+  bvOptions();renderBVtabs();
+  const dl=[...new Set(D.bos.map(b=>b[1]))].sort();$("bvdv").innerHTML='<option value="">All divisions</option>'+dl.map(x=>`<option${x==BVDIV?" selected":""}>${x}</option>`).join("");
+  const sl=[...new Set(D.bos.filter(b=>!BVDIV||b[1]==BVDIV).map(b=>b[2]||"(No sub division)"))].sort();if(BVSUB&&!sl.includes(BVSUB))BVSUB="";
+  $("bvsb").innerHTML='<option value="">All sub divisions</option>'+sl.map(x=>`<option${x==BVSUB?" selected":""}>${x}</option>`).join("");
+  const q=BVQ.toLowerCase();
+  BVROWS=D.bos.map((b,i)=>i).filter(i=>{const b=D.bos[i];return bvMatch(b,BVTAB)&&(!BVDIV||b[1]==BVDIV)&&(!BVSUB||(b[2]||"(No sub division)")==BVSUB)&&(!q||(b[0]+" "+b[1]+" "+b[2]+" "+b[29]).toLowerCase().includes(q))});
+  const V=i=>{const b=D.bos[i];return[b[29],b[0],b[2],b[1],CN[b[3]][0],BVVAL[BVSEL](b),b[13][BVSEL],b[15][BVSEL],b[17][BVSEL]][BVS.c]};
+  BVROWS.sort((a,b)=>{const x=V(a),y=V(b);return (typeof x=="string"?x.localeCompare(y):x-y)*BVS.d||D.bos[b][12]-D.bos[a][12]});
+  const cell=v=>v>0?`<span class="sf">${inr(v)}</span>`:'<span class="ok">✓ Met</span>';
+  const H=["Office ID","BO name","Sub division","Division","Category","Business","Gold shortfall","Diamond shortfall","Platinum shortfall"];
+  $("bvt").innerHTML="<thead><tr>"+H.map((h,i)=>`<th data-c="${i}">${h}${BVS.c==i?(BVS.d<0?" ▼":" ▲"):""}</th>`).join("")+"</tr></thead><tbody>"+
+   (BVROWS.slice(BVPG*PS,BVPG*PS+PS).map(i=>{const b=D.bos[i],c=CN[b[3]];return `<tr data-i="${i}"><td>${b[29]||"-"}</td><td>${b[0]}</td><td>${b[2]||"-"}</td><td>${b[1]}</td><td><span class="pill" style="background:${c[1]}">${c[0]}</span></td><td>${inr(BVVAL[BVSEL](b))}</td><td>${cell(b[13][BVSEL])}</td><td>${cell(b[15][BVSEL])}</td><td>${cell(b[17][BVSEL])}</td></tr>`}).join("")||'<tr><td colspan="9">No BOs match this filter.</td></tr>');
+  const pages=Math.max(1,Math.ceil(BVROWS.length/PS));BVPG=Math.min(BVPG,pages-1);
+  $("bvc").textContent=BVROWS.length.toLocaleString("en-IN")+" BOs – "+BVN[BVSEL];$("bvpgn").textContent="Page "+(BVPG+1)+" of "+pages;$("bvpv").disabled=BVPG<1;$("bvnx").disabled=BVPG>=pages-1;
+}
+$("bvsel").onchange=e=>{BVSEL=+e.target.value;BVTAB="all";BVPG=0;renderBV()};
+$("bvtabs").onclick=e=>{const k=e.target.dataset.k;if(k){BVTAB=k;BVPG=0;renderBV()}};
+$("bvdv").onchange=e=>{BVDIV=e.target.value;BVSUB="";BVPG=0;renderBV()};
+$("bvsb").onchange=e=>{BVSUB=e.target.value;BVPG=0;renderBV()};
+$("bvq").oninput=e=>{BVQ=e.target.value;BVPG=0;renderBV()};
+$("bvpv").onclick=()=>{BVPG--;renderBV()};$("bvnx").onclick=()=>{BVPG++;renderBV()};
+$("bvt").onclick=e=>{const th=e.target.closest("th[data-c]");if(th){const k=+th.dataset.c;BVS=BVS.c==k?{c:k,d:-BVS.d}:{c:k,d:k<5?1:-1};return renderBV()}
+  const tr=e.target.closest("tr[data-i]");if(tr)detail(+tr.dataset.i)};
+function bvExportRows(){
+  const H=["Office ID","BO","Sub Division","Division","Category",BVN[BVSEL],"Gold shortfall","Diamond shortfall","Platinum shortfall"];
+  return [H,...BVROWS.map(i=>{const b=D.bos[i];return [b[29],b[0],b[2],b[1],CN[b[3]][0],BVVAL[BVSEL](b),b[13][BVSEL],b[15][BVSEL],b[17][BVSEL]]})]}
+$("bvec").onclick=()=>{if(!BVROWS.length)return say("No BOs to export.",true);const q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  saveFile("BO_Vertical_Shortfall_"+BVN[BVSEL].replace(/\W+/g,"_")+".csv","\ufeff"+bvExportRows().map(r=>r.map(q).join(",")).join("\n"))};
+$("bvex").onclick=()=>{if(!BVROWS.length)return say("No BOs to export.",true);if(!window.XLSX)return say("Excel writer did not load – check your connection or use CSV.",true);
+  const A=bvExportRows(),ws=XLSX.utils.aoa_to_sheet(A);ws["!cols"]=A[0].map((h,i)=>({wch:i<4?22:16}));const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"BO Vertical Shortfall");
+  saveFile("BO_Vertical_Shortfall_"+BVN[BVSEL].replace(/\W+/g,"_")+".xlsx",XLSX.write(wb,{bookType:"xlsx",type:"array"}),"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")};
+
 function renderBO(){
   $("tabs").innerHTML=TABS.map(([k,l])=>`<button data-k="${k}" class="${k==TAB?"on":""}">${l} (${D.bos.filter(b=>match(b,k)).length})</button>`).join("");
   $("dv").innerHTML='<option value="">All divisions</option>'+D.div.map(r=>`<option${r[0]==DIV?" selected":""}>${r[0]}</option>`).join("");
@@ -432,7 +500,7 @@ $("expx").onclick=()=>{if(!ROWS.length)return say("No BOs to export.",true);if(!
   const A=exportRows(),ws=XLSX.utils.aoa_to_sheet(A),wb=XLSX.utils.book_new();ws["!cols"]=A[0].map((h,i)=>({wch:i<4?24:16}));XLSX.utils.book_append_sheet(wb,ws,"Branch Office wise");
   saveFile(exName()+".xlsx",XLSX.write(wb,{bookType:"xlsx",type:"array"}),"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")};
 
-function render(){head();renderBO();renderSub();renderKPI();renderVert();
+function render(){head();renderBO();renderSub();renderKPI();renderVert();renderBV();
 /* KPIs */
 $("kpis").innerHTML=D.cats.map(([n,v,p,c])=>`<div class="k" style="--c:${c}"><h3>${n}</h3><div class="v">${v.toLocaleString("en-IN")}</div><div class="p">${p}</div></div>`).join("");
 
@@ -492,6 +560,7 @@ addEventListener("dragover",e=>{e.preventDefault();document.body.classList.add("
 addEventListener("dragleave",e=>{if(!e.relatedTarget)document.body.classList.remove("dz")});
 addEventListener("drop",e=>{e.preventDefault();document.body.classList.remove("dz");if(e.dataTransfer.files[0])load(e.dataTransfer.files[0])});
 $("up2").onclick=()=>fi.click();
+$("soa").onclick=()=>{try{localStorage.removeItem("pw_admin")}catch(e){}ADMIN=!CFG.adminKey;buildNav()};
 let armed=0;$("rs").onclick=()=>{if(!armed){armed=1;$("rs").textContent="Click again to set all data to zero";setTimeout(()=>{armed=0;$("rs").textContent="Clear saved data"},4000);return}
   armed=0;$("rs").textContent="Clear saved data";commit(emptyData());render();say("All data cleared – upload an Excel file to load data again.")};
 
@@ -592,7 +661,7 @@ async function loadCfg(){
   if(!$("sf").options.length&&SRC.file)$("sf").innerHTML=`<option>${SRC.file}</option>`;
   await loadCfg();
   if(!SRC.custom){SRC.mode="web";SRC.path=CFG.dataFile;SRC.mins=+CFG.checkMinutes}
-  head();$("ntxt").value=CFG.note||"";
+  head();$("ntxt").value=CFG.note||"";updateAdmin();
   $("sp").value=SRC.path;$("si").value=String(SRC.mins);
   setMode(SRC.mode);renderDiag();startSync();syncNow(false);
 })();

@@ -23,6 +23,10 @@ postal-warrior-dashboard/
 Dashboard · Division Wise · Sub Division Wise (KPIs, charts, and a sortable Key Business Metrics table – POSB, PLI/RPLI, Postage Stamp, Parcel, Int. Mail, Article, Digital Txns, IPPB Premium Account, GI, POSA, Aadhaar, Total Business IPPB, CELC and DLC, per sub division) ·
 Branch Office Wise (Office ID column, search by BO name/Office ID/sub division, division/sub division filters, Excel/CSV export,
 click a BO for full business and shortfall detail) · Vertical Wise Summary (15 reports, sortable, Excel export) ·
+BO Wise Vertical Shortfall (pick one of 10 verticals – POSB, PLI/RPLI Policies, PLI/RPLI Initial Premium, Postage Stamp,
+Parcel Booking, Article Booking, Overall IPPB Business, IPPB Premium Account, GI Policy, POSA/Aadhaar Seeding – and see every
+BO's figure and Gold/Diamond/Platinum shortfall for just that vertical, with met/short tabs, search, division/sub division
+filters, sorting and Excel/CSV export) ·
 Warrior Categories · Near Gold / Near Diamond / Near Platinum Warrior · Not Qualified BOs ·
 Product Performance · KPI Charts · Data Management (upload, live sync, and a data-currency note shown to every visitor) · Settings (clear all data). The layout works on mobile phones.
 
@@ -84,6 +88,19 @@ it appear **automatically**, with a green “Dashboard updated” message – no
 ## Run it on your own computer
 Open a terminal in this folder and run `python -m http.server 8000`, then open <http://localhost:8000>.
 (Opening `index.html` by double-click also works for uploading files, but live sync from `data/` needs a web address.)
+
+## Restrict Data Management and Settings to yourself (optional)
+By default anyone who opens the dashboard can see every tab, including Data Management and Settings. To hide those two
+from the public and keep them for yourself:
+1. Open **config.json** and set `adminKey` to a passphrase of your choice, e.g. `"adminKey": "myPassphrase123"`. Commit the change.
+2. On the dashboard, click the small **🔒 Admin sign-in** link at the bottom of the sidebar and enter that passphrase.
+3. Data Management and Settings (and the footer's Upload Excel button) now appear only in that browser. Everyone else sees
+   every other tab and all your published data as normal, with no sign of these two tabs.
+4. Your browser remembers you're signed in. To sign out, use **Settings → Sign out of admin mode**, or the sidebar link again.
+
+This is a soft lock for a shared link, not real security: the passphrase lives in `config.json`, which is a public file in
+your repository, so anyone who reads the site's source could find it. Do not use it to protect sensitive data – use it only
+to keep the admin controls out of casual visitors' way. Leave `adminKey` empty (the default) to turn this off entirely.
 
 ## Data currency note
 In **Data Management**, a text box lets you type a note such as "POSB up to 20.09.26 · Article Booking up to 20.09.26" –
